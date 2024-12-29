@@ -56,3 +56,15 @@ run:
 # 	cargo binstall sccache --locked && export RUSTC_WRAPPER=$(which sccache)
 # 	cargo binstall cargo-watch cargo-edit cargo-hack
 # 	cargo install cargo-audit --features=fix
+
+.PHONY: dev
+dev:
+	cd tauri-app && pnpm tauri dev
+
+.PHONY: build
+build:
+	cargo tauri build
+
+.PHONY: generate-types
+generate-types:
+	cargo tauri typegen
