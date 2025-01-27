@@ -51,9 +51,15 @@ fn main() {
             if let Some(main_window) = app.get_webview_window("main") {
                 main_window.show()?;
             }
-            
+
             // オーバーレイウィンドウを取得して最前面に表示
             if let Some(overlay_window) = app.get_webview_window("overlay") {
+                // 現在のモニターの情報を取得
+                if let Some(monitor) = overlay_window.current_monitor()? {
+                    let size = monitor.size();
+                    overlay_window.set_size(tauri::Size::Physical(*size))?;
+                    overlay_window.set_position(tauri::Position::Physical(tauri::PhysicalPosition { x: 0, y: 0 }))?;
+                }
                 overlay_window.set_always_on_top(true)?;
                 overlay_window.set_ignore_cursor_events(true)?;
                 overlay_window.show()?;
