@@ -1,50 +1,107 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
+import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { load } from '@tauri-apps/plugin-store';
 import "./App.css";
 
-function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+interface AudioDevice {
+  name: string;
+  id: string;
+}
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
-  }
+function App() {
+  const [isActive, setIsActive] = useState(false);
+  const [devices, setDevices] = useState<AudioDevice[]>([]);
+  const [selectedDevice, setSelectedDevice] = useState<string>("");
+  const [showSelector, setShowSelector] = useState(true);
+
+  useEffect(() => {
+    const initStore = async () => {
+      const store = await load('.settings.dat');
+      
+      const loadDevices = async () => {
+        try {
+          const deviceList = await invoke<AudioDevice[]>('get_input_devices');
+          setDevices(deviceList);
+          
+          // 保存されたデバイス設定を読み込む
+          const savedDevice = await store.get('selected_device');
+          if (savedDevice) {
+            setSelectedDevice(savedDevice as string);
+            handleDeviceChange(savedDevice as string);
+            setShowSelector(false);
+          }
+        } catch (error) {
+          console.error('デバイス一覧の取得に失敗:', error);
+        }
+      };
+
+      loadDevices();
+    };
+
+    initStore();
+  }, []);
+
+  useEffect(() => {
+    const checkAudioStatus = async () => {
+      const active = await invoke<boolean>('check_audio_active');
+      setIsActive(active);
+    };
+
+    const interval = setInterval(checkAudioStatus, 100);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleDeviceChange = async (deviceId: string) => {
+    try {
+      await invoke('set_input_device', { deviceId });
+      setSelectedDevice(deviceId);
+      
+      // 設定を保存
+      const store = await load('.settings.dat');
+      await store.set('selected_device', deviceId);
+      await store.save();
+      
+      setShowSelector(false);
+    } catch (error) {
+      console.error('デバイスの設定に失敗:', error);
+    }
+  };
+
+  const handleShowSelector = () => {
+    setShowSelector(true);
+  };
 
   return (
-    <main className="container">
-      <h1>Welcome to Tauri + React</h1>
+    <>
+      {showSelector && (
+        <div className="device-selector">
+          <h2>入力デバイスを選択</h2>
+          <select 
+            value={selectedDevice} 
+            onChange={(e) => handleDeviceChange(e.target.value)}
+          >
+            <option value="">デバイスを選択してください</option>
+            {devices.map((device) => (
+              <option key={device.id} value={device.id}>
+                {device.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
-      <div className="row">
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className={`overlay ${isActive ? 'active' : ''}`}>
+        <div className="border-effect" />
+        {!showSelector && (
+          <button 
+            className="settings-button"
+            onClick={handleShowSelector}
+          >
+            設定
+          </button>
+        )}
       </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
-
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
-    </main>
+    </>
   );
 }
 

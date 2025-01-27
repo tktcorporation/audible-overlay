@@ -12,14 +12,30 @@
   "app": {
     "windows": [
       {
+        "label": "main",
         "title": "audible-overlay",
         "width": 800,
-        "height": 600
+        "height": 600,
+        "visible": false
+      },
+      {
+        "label": "overlay",
+        "decorations": false,
+        "transparent": true,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "fullscreen": true,
+        "width": 1920,
+        "height": 1080,
+        "resizable": true,
+        "url": "index.html",
+        "visible": true
       }
     ],
     "security": {
       "csp": null
-    }
+    },
+    "macOSPrivateApi": true
   },
   "bundle": {
     "active": true,

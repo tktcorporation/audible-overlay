@@ -12,13 +12,19 @@
   font-weight: 400;
 
   color: #0f0f0f;
-  background-color: #f6f6f6;
+  background-color: transparent !important;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: transparent !important;
 }
 
 .container {
@@ -98,7 +104,7 @@ button {
 @media (prefers-color-scheme: dark) {
   :root {
     color: #f6f6f6;
-    background-color: #2f2f2f;
+    background-color: transparent !important;
   }
 
   a:hover {
@@ -113,4 +119,95 @@ button {
   button:active {
     background-color: #0f0f0f69;
   }
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background: transparent;
+}
+
+.border-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 6px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.overlay.active .border-effect {
+  border-color: rgba(0, 255, 0, 0.6);
+  box-shadow: 
+    0 0 25px rgba(0, 255, 0, 0.4),
+    inset 0 0 25px rgba(0, 255, 0, 0.4);
+}
+
+.device-selector {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.device-selector h2 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 1.2em;
+}
+
+.device-selector select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 1em;
+}
+
+@media (prefers-color-scheme: dark) {
+  .device-selector {
+    background: rgba(40, 40, 40, 0.9);
+  }
+
+  .device-selector h2 {
+    color: #fff;
+  }
+
+  .device-selector select {
+    background: #333;
+    color: #fff;
+    border-color: #555;
+  }
+}
+
+.settings-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 8px 16px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.overlay:hover .settings-button {
+  opacity: 1;
+}
+
+.settings-button:hover {
+  background: rgba(0, 0, 0, 0.8);
 }
