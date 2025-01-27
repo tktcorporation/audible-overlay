@@ -12,7 +12,6 @@ function App() {
   const [isActive, setIsActive] = useState(false);
   const [devices, setDevices] = useState<AudioDevice[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<string>("");
-  const [showSelector, setShowSelector] = useState(true);
   const [isOverlayWindow, setIsOverlayWindow] = useState(false);
   const [audioLevel, setAudioLevel] = useState<number>(0);
 
@@ -33,7 +32,6 @@ function App() {
           if (savedDevice) {
             setSelectedDevice(savedDevice as string);
             handleDeviceChange(savedDevice as string);
-            setShowSelector(false);
           }
         } catch (error) {
           console.error('デバイス一覧の取得に失敗:', error);
@@ -83,15 +81,9 @@ function App() {
       const store = await load('.settings.dat');
       await store.set('selected_device', deviceId);
       await store.save();
-      
-      setShowSelector(false);
     } catch (error) {
       console.error('デバイスの設定に失敗:', error);
     }
-  };
-
-  const handleShowSelector = () => {
-    setShowSelector(true);
   };
 
   return (
