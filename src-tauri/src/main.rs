@@ -23,15 +23,28 @@ fn set_input_device(device_id: String, state: tauri::State<Mutex<AudioMonitor>>)
         .map_err(|e| e.to_string())
 }
 
+#[tauri::command]
+fn get_window_type(window: tauri::Window) -> String {
+    window.label().to_string()
+}
+
+#[tauri::command]
+fn get_audio_level(state: tauri::State<Mutex<AudioMonitor>>) -> f32 {
+    state.lock().unwrap().get_current_level()
+}
+
 fn main() {
     let audio_monitor = AudioMonitor::new();
 
     tauri::Builder::default()
         .manage(Mutex::new(audio_monitor))
+        .plugin(tauri_plugin_store::Builder::default().build())
         .invoke_handler(tauri::generate_handler![
             check_audio_active,
             get_input_devices,
-            set_input_device
+            set_input_device,
+            get_window_type,
+            get_audio_level
         ])
         .setup(|app| {
             // メインウィンドウを表示（デバイス選択用）
@@ -42,6 +55,7 @@ fn main() {
             // オーバーレイウィンドウを取得して最前面に表示
             if let Some(overlay_window) = app.get_webview_window("overlay") {
                 overlay_window.set_always_on_top(true)?;
+                overlay_window.set_ignore_cursor_events(true)?;
                 overlay_window.show()?;
             }
             Ok(())

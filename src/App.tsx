@@ -13,6 +13,8 @@ function App() {
   const [devices, setDevices] = useState<AudioDevice[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<string>("");
   const [showSelector, setShowSelector] = useState(true);
+  const [isOverlayWindow, setIsOverlayWindow] = useState(false);
+  const [audioLevel, setAudioLevel] = useState<number>(0);
 
   useEffect(() => {
     const initStore = async () => {
@@ -20,11 +22,14 @@ function App() {
       
       const loadDevices = async () => {
         try {
+          console.log('デバイス一覧を取得中...');
           const deviceList = await invoke<AudioDevice[]>('get_input_devices');
+          console.log('取得したデバイス一覧:', deviceList);
           setDevices(deviceList);
           
           // 保存されたデバイス設定を読み込む
           const savedDevice = await store.get('selected_device');
+          console.log('保存されたデバイス設定:', savedDevice);
           if (savedDevice) {
             setSelectedDevice(savedDevice as string);
             handleDeviceChange(savedDevice as string);
@@ -51,6 +56,24 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const initWindow = async () => {
+      const windowType = await invoke<string>('get_window_type');
+      setIsOverlayWindow(windowType === 'overlay');
+    };
+    initWindow();
+  }, []);
+
+  useEffect(() => {
+    const checkAudioLevel = async () => {
+      const level = await invoke<number>('get_audio_level');
+      setAudioLevel(level);
+    };
+
+    const interval = setInterval(checkAudioLevel, 100);
+    return () => clearInterval(interval);
+  }, []);
+
   const handleDeviceChange = async (deviceId: string) => {
     try {
       await invoke('set_input_device', { deviceId });
@@ -73,7 +96,7 @@ function App() {
 
   return (
     <>
-      {showSelector && (
+      {!isOverlayWindow && (
         <div className="device-selector">
           <h2>入力デバイスを選択</h2>
           <select 
@@ -87,20 +110,18 @@ function App() {
               </option>
             ))}
           </select>
+          <div className="debug-info">
+            <p>音声レベル: {audioLevel.toFixed(3)}</p>
+            <p>アクティブ: {isActive ? "はい" : "いいえ"}</p>
+          </div>
         </div>
       )}
 
-      <div className={`overlay ${isActive ? 'active' : ''}`}>
-        <div className="border-effect" />
-        {!showSelector && (
-          <button 
-            className="settings-button"
-            onClick={handleShowSelector}
-          >
-            設定
-          </button>
-        )}
-      </div>
+      {isOverlayWindow && (
+        <div className={`overlay ${isActive ? 'active' : ''}`}>
+          <div className="border-effect" />
+        </div>
+      )}
     </>
   );
 }

@@ -24,12 +24,13 @@
         "transparent": true,
         "alwaysOnTop": true,
         "skipTaskbar": true,
-        "fullscreen": true,
+        "fullscreen": false,
         "width": 1920,
         "height": 1080,
         "resizable": true,
         "url": "index.html",
-        "visible": true
+        "visible": true,
+        "focus": false
       }
     ],
     "security": {
