@@ -7,7 +7,7 @@
 }
 :root {
   font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", YuGothic, Meiryo, -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.6;
   font-weight: 400;
   letter-spacing: 0.02em;
@@ -237,10 +237,10 @@ button {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 2rem;
+  padding: 1.5rem;
   border-radius: 16px;
   z-index: 1000;
-  min-width: 320px;
+  min-width: 300px;
   animation: fadeIn 0.3s ease-out;
 }
 
@@ -256,9 +256,9 @@ button {
 }
 
 .device-selector h2 {
-  margin: 0 0 1.5rem 0;
+  margin: 0 0 1rem 0;
   color: var(--text-primary);
-  font-size: 1.4em;
+  font-size: 1.2em;
   font-weight: 600;
   text-align: center;
   position: relative;
@@ -279,20 +279,20 @@ button {
 .device-selector select {
   font-family: inherit;
   width: 100%;
-  padding: 0.75rem 1rem;
+  padding: 0.6rem 0.8rem;
   border-radius: 8px;
   border: 2px solid var(--select-border);
-  font-size: 1em;
+  font-size: 0.95em;
   color: var(--text-primary);
   background: var(--select-bg);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.2rem;
   transition: all 0.2s ease;
   cursor: pointer;
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='var(--arrow-color)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.7rem center;
-  background-size: 1.2em;
+  background-size: 1em;
   letter-spacing: 0.02em;
 }
 
@@ -307,15 +307,15 @@ button {
 }
 
 .debug-info {
-  margin-top: 1.5rem;
-  padding: 1rem;
+  margin-top: 1.2rem;
+  padding: 0.8rem;
   background: var(--debug-bg);
   border-radius: 8px;
-  font-size: 0.9em;
+  font-size: 0.85em;
 }
 
 .debug-info p {
-  margin: 0.5rem 0;
+  margin: 0.4rem 0;
   color: var(--text-secondary);
   display: flex;
   justify-content: space-between;
