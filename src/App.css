@@ -196,3 +196,46 @@ body {
 .theme-toggle-btn:active {
   transform: translateY(0);
 }
+
+.threshold-input-container {
+  position: relative;
+}
+
+.threshold-number-input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  border: 2px solid var(--select-border);
+  font-size: 0.95em;
+  color: var(--text-primary);
+  background: var(--select-bg);
+  transition: all 0.2s ease;
+  font-family: inherit;
+  letter-spacing: 0.02em;
+  -moz-appearance: textfield;
+}
+
+.threshold-number-input::-webkit-outer-spin-button,
+.threshold-number-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.threshold-number-input:hover {
+  border-color: var(--select-hover);
+}
+
+.threshold-number-input:focus {
+  outline: none;
+  border-color: var(--select-focus);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.threshold-number-input.invalid {
+  border-color: #e53e3e;
+  color: #e53e3e;
+}
+
+.threshold-number-input.invalid:focus {
+  box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
+}

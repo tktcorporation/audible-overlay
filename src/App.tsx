@@ -26,9 +26,11 @@ interface SettingsWindowProps {
   theme: Theme;
   audioLevel: number;
   isActive: boolean;
+  threshold: number;
   onDeviceChange: (deviceId: string) => Promise<void>;
   onMonitorChange: (monitorId: number) => Promise<void>;
   onThemeChange: (theme: Theme) => Promise<void>;
+  onThresholdChange: (threshold: number) => Promise<void>;
 }
 
 const ThemeToggle: React.FC<{
@@ -53,6 +55,45 @@ const ThemeToggle: React.FC<{
   );
 };
 
+const ThresholdInput: React.FC<{
+  threshold: number;
+  onThresholdChange: (threshold: number) => Promise<void>;
+}> = ({ threshold, onThresholdChange }) => {
+  const [value, setValue] = useState(threshold.toString());
+  const [isValid, setIsValid] = useState(true);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setValue(newValue);
+    
+    const num = parseFloat(newValue);
+    if (!isNaN(num) && num >= 0 && num <= 1) {
+      setIsValid(true);
+      onThresholdChange(num);
+    } else {
+      setIsValid(false);
+    }
+  };
+
+  return (
+    <div className="device-selector">
+      <h2>音声検出の閾値</h2>
+      <div className="threshold-input-container">
+        <input
+          type="text"
+          value={value}
+          onChange={handleChange}
+          className={`threshold-number-input ${!isValid ? 'invalid' : ''}`}
+          placeholder="0.001"
+        />
+        <p className="text-sm text-secondary mt-2">
+          小さい値ほど音声を検出しやすくなります（0.001 ～ 1.000）
+        </p>
+      </div>
+    </div>
+  );
+};
+
 const SettingsWindow: React.FC<SettingsWindowProps> = ({
   devices,
   selectedDevice,
@@ -61,9 +102,11 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({
   theme,
   audioLevel,
   isActive,
+  threshold,
   onDeviceChange,
   onMonitorChange,
   onThemeChange,
+  onThresholdChange,
 }) => {
   return (
     <div className="device-selector-window">
@@ -104,6 +147,11 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({
               ))}
             </select>
           </div>
+
+          <ThresholdInput
+            threshold={threshold}
+            onThresholdChange={onThresholdChange}
+          />
 
           <div className="debug-info">
             <div className="flex justify-between items-center">
@@ -295,6 +343,14 @@ function App() {
     await store.save();
   };
 
+  const handleThresholdChange = async (newThreshold: number) => {
+    setThreshold(newThreshold);
+    const store = await load('.settings.dat');
+    await store.set('threshold', newThreshold);
+    await store.save();
+    await invoke('set_threshold', { threshold: newThreshold });
+  };
+
   return (
     <>
       {!isOverlayWindow && (
@@ -306,9 +362,11 @@ function App() {
           theme={theme}
           audioLevel={audioLevel}
           isActive={isActive}
+          threshold={threshold}
           onDeviceChange={handleDeviceChange}
           onMonitorChange={handleMonitorChange}
           onThemeChange={handleThemeChange}
+          onThresholdChange={handleThresholdChange}
         />
       )}
 
