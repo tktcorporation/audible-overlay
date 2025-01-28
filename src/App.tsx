@@ -3,6 +3,8 @@ import { invoke } from "@tauri-apps/api/core";
 import { load } from '@tauri-apps/plugin-store';
 import "./App.css";
 
+type Theme = 'light' | 'dark' | 'system';
+
 interface AudioDevice {
   name: string;
   id: string;
@@ -23,6 +25,7 @@ function App() {
   const [audioLevel, setAudioLevel] = useState<number>(0);
   const [monitors, setMonitors] = useState<MonitorInfo[]>([]);
   const [selectedMonitor, setSelectedMonitor] = useState<number>(0);
+  const [theme, setTheme] = useState<Theme>('system');
 
   useEffect(() => {
     const initStore = async () => {
@@ -49,8 +52,14 @@ function App() {
             setSelectedMonitor(savedMonitor as number);
             handleMonitorChange(savedMonitor as number);
           }
+
+          // 保存されたテーマ設定を読み込む
+          const savedTheme = await store.get('theme');
+          if (savedTheme) {
+            setTheme(savedTheme as Theme);
+          }
         } catch (error) {
-          console.error('デバイス一覧の取得に失敗:', error);
+          console.error('設定の読み込みに失敗:', error);
         }
       };
 
@@ -59,6 +68,35 @@ function App() {
 
     initStore();
   }, []);
+
+  // テーマの変更を監視し、クラスを更新
+  useEffect(() => {
+    const root = document.documentElement;
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (theme === 'system') {
+      root.classList.remove('light-theme', 'dark-theme');
+      root.classList.add(prefersDark ? 'dark-theme' : 'light-theme');
+    } else {
+      root.classList.remove('light-theme', 'dark-theme');
+      root.classList.add(`${theme}-theme`);
+    }
+  }, [theme]);
+
+  // システムのカラースキーム変更を監視
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = () => {
+      if (theme === 'system') {
+        const root = document.documentElement;
+        root.classList.remove('light-theme', 'dark-theme');
+        root.classList.add(mediaQuery.matches ? 'dark-theme' : 'light-theme');
+      }
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, [theme]);
 
   useEffect(() => {
     const loadMonitors = async () => {
@@ -129,6 +167,13 @@ function App() {
     }
   };
 
+  const handleThemeChange = async (newTheme: Theme) => {
+    setTheme(newTheme);
+    const store = await load('.settings.dat');
+    await store.set('theme', newTheme);
+    await store.save();
+  };
+
   return (
     <>
       {!isOverlayWindow && (
@@ -157,6 +202,17 @@ function App() {
                   {monitor.name}
                 </option>
               ))}
+            </select>
+
+            <h2>テーマ設定</h2>
+            <select
+              value={theme}
+              onChange={(e) => handleThemeChange(e.target.value as Theme)}
+              className="theme-select"
+            >
+              <option value="system">システム設定に同期</option>
+              <option value="light">ライトモード</option>
+              <option value="dark">ダークモード</option>
             </select>
 
             <div className="debug-info">

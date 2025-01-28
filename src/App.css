@@ -32,8 +32,39 @@ body {
   min-height: 100vh;
 }
 
+/* ライトテーマ（デフォルト） */
+:root,
+.light-theme {
+  --bg-gradient-from: rgba(255, 255, 255, 0.95);
+  --bg-gradient-to: rgba(240, 240, 250, 0.95);
+  --text-primary: #2d3748;
+  --text-secondary: #4a5568;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --select-bg: rgba(255, 255, 255, 0.8);
+  --select-border: #e2e8f0;
+  --select-hover: #4299e1;
+  --select-focus: #667eea;
+  --debug-bg: rgba(247, 250, 252, 0.8);
+  --arrow-color: %234a5568;
+}
+
+/* ダークテーマ */
+.dark-theme {
+  --bg-gradient-from: rgba(26, 32, 44, 0.95);
+  --bg-gradient-to: rgba(45, 55, 72, 0.95);
+  --text-primary: #f7fafc;
+  --text-secondary: #e2e8f0;
+  --border-color: rgba(255, 255, 255, 0.05);
+  --select-bg: rgba(45, 55, 72, 0.8);
+  --select-border: #4a5568;
+  --select-hover: #4299e1;
+  --select-focus: #667eea;
+  --debug-bg: rgba(26, 32, 44, 0.8);
+  --arrow-color: %23f7fafc;
+}
+
 .device-selector-window {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 240, 250, 0.95));
+  background: linear-gradient(135deg, var(--bg-gradient-from), var(--bg-gradient-to));
   backdrop-filter: blur(10px);
   min-height: 100vh;
 }
@@ -208,7 +239,6 @@ button {
   border-radius: 16px;
   z-index: 1000;
   min-width: 320px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
   animation: fadeIn 0.3s ease-out;
 }
 
@@ -225,7 +255,7 @@ button {
 
 .device-selector h2 {
   margin: 0 0 1.5rem 0;
-  color: #2d3748;
+  color: var(--text-primary);
   font-size: 1.4em;
   font-weight: 600;
   text-align: center;
@@ -249,14 +279,15 @@ button {
   width: 100%;
   padding: 0.75rem 1rem;
   border-radius: 8px;
-  border: 2px solid #e2e8f0;
+  border: 2px solid var(--select-border);
   font-size: 1em;
-  background: rgba(255, 255, 255, 0.8);
+  color: var(--text-primary);
+  background: var(--select-bg);
   margin-bottom: 1.5rem;
   transition: all 0.2s ease;
   cursor: pointer;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%234a5568' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='var(--arrow-color)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.7rem center;
   background-size: 1.2em;
@@ -264,26 +295,26 @@ button {
 }
 
 .device-selector select:hover {
-  border-color: #4299e1;
+  border-color: var(--select-hover);
 }
 
 .device-selector select:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--select-focus);
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .debug-info {
   margin-top: 1.5rem;
   padding: 1rem;
-  background: rgba(247, 250, 252, 0.8);
+  background: var(--debug-bg);
   border-radius: 8px;
   font-size: 0.9em;
 }
 
 .debug-info p {
   margin: 0.5rem 0;
-  color: #4a5568;
+  color: var(--text-secondary);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -309,4 +340,9 @@ button {
 
 .settings-button:hover {
   background: rgba(0, 0, 0, 0.8);
+}
+
+/* テーマセレクトのスタイル */
+.theme-select {
+  margin-top: 0.5rem;
 }
