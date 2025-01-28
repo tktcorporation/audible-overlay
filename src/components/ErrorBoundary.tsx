@@ -37,6 +37,12 @@ class ErrorBoundaryComponent extends Component<Props, State> {
           <p className="mt-2 text-sm text-red-600 dark:text-red-300">
             {t('error.message')}
           </p>
+          {/* ErrorDetails */}
+          <div className="mt-4">
+            <p className="text-sm text-red-600 dark:text-red-300">
+              {JSON.stringify(this.state.error)}
+            </p>
+          </div>
           <button
             className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
             onClick={() => window.location.reload()}
