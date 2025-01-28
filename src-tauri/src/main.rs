@@ -115,6 +115,17 @@ fn move_overlay_to_monitor(app_handle: tauri::AppHandle, monitor_id: u32) -> Res
     Ok(())
 }
 
+#[tauri::command]
+fn set_threshold(threshold: f32, state: tauri::State<Mutex<AudioMonitor>>) -> Result<(), String> {
+    state.lock().unwrap().set_threshold(threshold);
+    Ok(())
+}
+
+#[tauri::command]
+fn get_threshold(state: tauri::State<Mutex<AudioMonitor>>) -> f32 {
+    state.lock().unwrap().get_threshold()
+}
+
 fn main() {
     let audio_monitor = AudioMonitor::new();
 
@@ -129,7 +140,9 @@ fn main() {
             get_audio_level,
             get_available_monitors,
             move_to_monitor,
-            move_overlay_to_monitor
+            move_overlay_to_monitor,
+            set_threshold,
+            get_threshold
         ])
         .setup(|app| {
             // メインウィンドウを表示（デバイス選択用）

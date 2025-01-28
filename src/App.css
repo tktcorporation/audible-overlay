@@ -357,3 +357,34 @@ button {
 .theme-select {
   margin-top: 0.5rem;
 }
+
+.threshold-input {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  border: 2px solid var(--select-border);
+  font-size: 0.95em;
+  color: var(--text-primary);
+  background: var(--select-bg);
+  margin-bottom: 0.5rem;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.threshold-input:hover {
+  border-color: var(--select-hover);
+}
+
+.threshold-input:focus {
+  outline: none;
+  border-color: var(--select-focus);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.threshold-value {
+  text-align: center;
+  margin-top: 8px;
+  margin-bottom: 1rem;
+  font-size: 14px;
+  color: var(--text-secondary);
+}

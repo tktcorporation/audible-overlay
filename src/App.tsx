@@ -26,6 +26,7 @@ function App() {
   const [monitors, setMonitors] = useState<MonitorInfo[]>([]);
   const [selectedMonitor, setSelectedMonitor] = useState<number>(0);
   const [theme, setTheme] = useState<Theme>('system');
+  const [threshold, setThreshold] = useState<number>(0.001);
 
   useEffect(() => {
     const initStore = async () => {
@@ -57,6 +58,13 @@ function App() {
           const savedTheme = await store.get('theme');
           if (savedTheme) {
             setTheme(savedTheme as Theme);
+          }
+
+          // 保存された閾値設定を読み込む
+          const savedThreshold = await store.get('threshold');
+          if (savedThreshold !== null) {
+            setThreshold(savedThreshold as number);
+            await invoke('set_threshold', { threshold: savedThreshold });
           }
         } catch (error) {
           console.error('設定の読み込みに失敗:', error);
@@ -156,7 +164,7 @@ function App() {
   const handleMonitorChange = async (monitorId: number) => {
     try {
       // オーバーレイウィンドウを移動
-      await invoke('move_overlay_to_monitor', { monitorId });
+      await invoke('move_overlay_to_monitor', { monitor_id: monitorId });
       setSelectedMonitor(monitorId);
       
       // 設定を保存
@@ -173,6 +181,18 @@ function App() {
     const store = await load('.settings.dat');
     await store.set('theme', newTheme);
     await store.save();
+  };
+
+  const handleThresholdChange = async (newThreshold: number) => {
+    try {
+      setThreshold(newThreshold);
+      await invoke('set_threshold', { threshold: newThreshold });
+      const store = await load('.settings.dat');
+      await store.set('threshold', newThreshold);
+      await store.save();
+    } catch (error) {
+      console.error('閾値の設定に失敗:', error);
+    }
   };
 
   return (
@@ -215,6 +235,20 @@ function App() {
               <option value="light">ライトモード</option>
               <option value="dark">ダークモード</option>
             </select>
+
+            <h2>音声検出閾値</h2>
+            <input
+              type="number"
+              min="0.0001"
+              max="0.01"
+              step="0.0001"
+              value={threshold}
+              onChange={(e) => handleThresholdChange(Number(e.target.value))}
+              className="threshold-input"
+            />
+            <div className="threshold-value">
+              現在の閾値: {threshold?.toFixed(4) ?? '0.0010'}
+            </div>
 
             <div className="debug-info">
               <p>音声レベル: {audioLevel.toFixed(3)}</p>

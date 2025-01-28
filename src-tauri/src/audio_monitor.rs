@@ -13,6 +13,7 @@ pub struct AudioMonitor {
     is_active: Arc<AtomicBool>,
     stream: Arc<Mutex<Option<Box<dyn StreamTrait>>>>,
     current_level: Arc<Mutex<f32>>,
+    threshold: Arc<Mutex<f32>>,
 }
 
 unsafe impl Send for AudioMonitor {}
@@ -24,6 +25,7 @@ impl AudioMonitor {
             is_active: Arc::new(AtomicBool::new(false)),
             stream: Arc::new(Mutex::new(None)),
             current_level: Arc::new(Mutex::new(0.0)),
+            threshold: Arc::new(Mutex::new(0.001)),
         }
     }
 
@@ -59,6 +61,7 @@ impl AudioMonitor {
         let config = device.default_input_config()?;
         let is_active = self.is_active.clone();
         let current_level = self.current_level.clone();
+        let threshold = self.threshold.clone();
 
         if let Some(stream) = self.stream.lock().unwrap().take() {
             drop(stream);
@@ -69,7 +72,8 @@ impl AudioMonitor {
             move |data: &[f32], _: &_| {
                 let level = data.iter().map(|&sample| sample.abs()).fold(0.0f32, f32::max);
                 *current_level.lock().unwrap() = level;
-                let is_speaking = level > 0.001;
+                let threshold = *threshold.lock().unwrap();
+                let is_speaking = level > threshold;
                 is_active.store(is_speaking, Ordering::Relaxed);
             },
             |err| eprintln!("音声ストリームでエラーが発生: {}", err),
@@ -88,5 +92,13 @@ impl AudioMonitor {
 
     pub fn get_current_level(&self) -> f32 {
         *self.current_level.lock().unwrap()
+    }
+
+    pub fn set_threshold(&self, threshold: f32) {
+        *self.threshold.lock().unwrap() = threshold;
+    }
+
+    pub fn get_threshold(&self) -> f32 {
+        *self.threshold.lock().unwrap()
     }
 } 
