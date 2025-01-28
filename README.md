@@ -1,54 +1,48 @@
 # Audible Overlay
 
-[日本語](./README_JA.md) | English
-
 A desktop application that displays audio input levels as an overlay on your desktop.
 
-## Features
+デスクトップ上にオーディオ入力レベルをオーバーレイ表示するアプリケーションです。
+
+## Features / 機能概要
 
 - Always-on-top overlay display on desktop
 - Real-time monitoring of audio input device levels (e.g., microphone)
 - Multiple input device selection support
 - Semi-transparent overlay design that minimizes interference with desktop work
 
-## Technology Stack
+- デスクトップ上に常に最前面でオーバーレイ表示
+- マイクなどの音声入力デバイスのレベルをリアルタイムモニタリング
+- 複数の入力デバイスから選択可能
+- 透過的なオーバーレイでデスクトップ作業の邪魔になりにくい設計
 
-- [Tauri](https://tauri.app/) - Cross-platform desktop application framework
-- [React](https://react.dev/) - UI framework
-- [TypeScript](https://www.typescriptlang.org/) - Type-safe JavaScript
-- [Rust](https://www.rust-lang.org/) - Backend processing
+## Technology Stack / 技術スタック
 
-## Development Environment Setup
+- [Tauri](https://tauri.app/) - Cross-platform desktop application framework / クロスプラットフォームデスクトップアプリケーションフレームワーク
+- [React](https://react.dev/) - UI framework / UIフレームワーク
+- [TypeScript](https://www.typescriptlang.org/) - Type-safe JavaScript / 型安全な JavaScript
+- [Rust](https://www.rust-lang.org/) - Backend processing / バックエンド処理
 
-### Prerequisites
+## Development Environment Setup / 開発環境のセットアップ
+
+### Prerequisites / 必要な環境
 
 - [Node.js](https://nodejs.org/)
 - [Rust](https://www.rust-lang.org/)
 - [pnpm](https://pnpm.io/)
 
-### Recommended IDE Setup
+### Recommended IDE Setup / 推奨IDE設定
 
 - [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
 
-## Running the Application
+## Running the Application / アプリケーションの起動方法
 
-1. Install dependencies
+1. Install dependencies / 依存関係のインストール
 ```bash
 pnpm install
 ```
 
-2. Start in development mode
+2. Start in development mode / 開発モードでの起動
 ```bash
 pnpm tauri dev
 ```
-
-## Usage
-
-1. When you launch the application, the input device selection screen will be displayed
-2. Select the audio input device you want to use
-3. An overlay window will appear on the screen, showing the audio level of the selected device in real-time
-4. The overlay is click-through, so it won't interfere with your normal work
-
-## License
-
-Released under the [MIT License](LICENSE).
