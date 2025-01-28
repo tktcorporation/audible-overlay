@@ -26,10 +26,12 @@ body {
   margin: 0;
   padding: 0;
   background: transparent !important;
+  -webkit-app-region: drag;
 }
 
 #root {
   min-height: 100vh;
+  background: transparent !important;
 }
 
 /* ライトテーマ（デフォルト） */
@@ -67,6 +69,7 @@ body {
   background: linear-gradient(135deg, var(--bg-gradient-from), var(--bg-gradient-to));
   backdrop-filter: blur(10px);
   min-height: 100vh;
+  -webkit-app-region: drag;
 }
 
 .container {
@@ -205,11 +208,12 @@ button {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  background: transparent;
+  background: transparent !important;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  -webkit-app-region: drag;
 }
 
 .border-effect {
@@ -220,6 +224,7 @@ button {
   bottom: 0;
   transition: all 0.3s ease;
   box-sizing: border-box;
+  background: transparent !important;
 }
 
 .overlay.active .border-effect {

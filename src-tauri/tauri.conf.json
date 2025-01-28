@@ -16,7 +16,8 @@
         "title": "AudibleOverlay",
         "width": 800,
         "height": 600,
-        "visible": false
+        "visible": false,
+        "transparent": true
       },
       {
         "label": "overlay",
@@ -29,7 +30,8 @@
         "resizable": true,
         "url": "index.html",
         "visible": true,
-        "focus": false
+        "focus": false,
+        "theme": "transparent"
       }
     ],
     "security": {
