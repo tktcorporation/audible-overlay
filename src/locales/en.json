@@ -1,0 +1,30 @@
+{
+  "title": "AudibleOverlay",
+  "theme": {
+    "current": "Current theme: {{theme}}",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "language": {
+    "title": "Select Language",
+    "ja": "日本語",
+    "en": "English"
+  },
+  "device": {
+    "title": "Select Input Device",
+    "placeholder": "Please select a device"
+  },
+  "monitor": {
+    "title": "Select Display Monitor"
+  },
+  "threshold": {
+    "title": "Voice Detection Threshold",
+    "description": "Lower values make voice detection more sensitive (0.001 - 1.000)"
+  },
+  "status": {
+    "audioLevel": "Audio Level: {{level}}",
+    "active": "Active",
+    "inactive": "Inactive"
+  }
+} 

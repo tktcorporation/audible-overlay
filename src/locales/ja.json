@@ -1,0 +1,30 @@
+{
+  "title": "AudibleOverlay",
+  "theme": {
+    "current": "現在のテーマ: {{theme}}",
+    "light": "ライト",
+    "dark": "ダーク",
+    "system": "システム"
+  },
+  "language": {
+    "title": "言語を選択",
+    "ja": "日本語",
+    "en": "English"
+  },
+  "device": {
+    "title": "入力デバイスを選択",
+    "placeholder": "デバイスを選択してください"
+  },
+  "monitor": {
+    "title": "表示モニターを選択"
+  },
+  "threshold": {
+    "title": "音声検出の閾値",
+    "description": "小さい値ほど音声を検出しやすくなります（0.001 ～ 1.000）"
+  },
+  "status": {
+    "audioLevel": "音声レベル: {{level}}",
+    "active": "アクティブ",
+    "inactive": "非アクティブ"
+  }
+} 

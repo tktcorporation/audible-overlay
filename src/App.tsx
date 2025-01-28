@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { load } from '@tauri-apps/plugin-store';
+import { useTranslation } from 'react-i18next';
 import "./App.css";
-import { Sun, Moon, Monitor } from "lucide-react";
+import "./i18n";
+import { Sun, Moon, Monitor, Globe2 } from "lucide-react";
 
 type Theme = 'light' | 'dark' | 'system';
 
@@ -37,6 +39,7 @@ const ThemeToggle: React.FC<{
   theme: Theme;
   onThemeChange: (theme: Theme) => Promise<void>;
 }> = ({ theme, onThemeChange }) => {
+  const { t } = useTranslation();
   const handleClick = () => {
     const nextTheme = theme === 'light' ? 'dark' : theme === 'dark' ? 'system' : 'light';
     onThemeChange(nextTheme);
@@ -46,7 +49,7 @@ const ThemeToggle: React.FC<{
     <button
       onClick={handleClick}
       className="theme-toggle-btn"
-      title={`現在のテーマ: ${theme === 'system' ? 'システム' : theme === 'light' ? 'ライト' : 'ダーク'}`}
+      title={t('theme.current', { theme: t(`theme.${theme}`) })}
     >
       {theme === 'light' && <Sun size={20} />}
       {theme === 'dark' && <Moon size={20} />}
@@ -59,6 +62,7 @@ const ThresholdInput: React.FC<{
   threshold: number;
   onThresholdChange: (threshold: number) => Promise<void>;
 }> = ({ threshold, onThresholdChange }) => {
+  const { t } = useTranslation();
   const [value, setValue] = useState(threshold.toString());
   const [isValid, setIsValid] = useState(true);
 
@@ -77,7 +81,7 @@ const ThresholdInput: React.FC<{
 
   return (
     <div className="device-selector">
-      <h2>音声検出の閾値</h2>
+      <h2>{t('threshold.title')}</h2>
       <div className="threshold-input-container">
         <input
           type="text"
@@ -87,9 +91,36 @@ const ThresholdInput: React.FC<{
           placeholder="0.001"
         />
         <p className="text-sm text-secondary mt-2">
-          小さい値ほど音声を検出しやすくなります（0.001 ～ 1.000）
+          {t('threshold.description')}
         </p>
       </div>
+    </div>
+  );
+};
+
+const LanguageSelector: React.FC = () => {
+  const { t, i18n } = useTranslation();
+  const [currentLang, setCurrentLang] = useState(i18n.language);
+
+  const handleLanguageChange = async (lang: string) => {
+    await i18n.changeLanguage(lang);
+    setCurrentLang(lang);
+    const store = await load('.settings.dat');
+    await store.set('language', lang);
+    await store.save();
+  };
+
+  return (
+    <div className="language-selector flex items-center gap-2">
+      <Globe2 size={20} />
+      <select
+        value={currentLang}
+        onChange={(e) => handleLanguageChange(e.target.value)}
+        className="select-input"
+      >
+        <option value="ja">{t('language.ja')}</option>
+        <option value="en">{t('language.en')}</option>
+      </select>
     </div>
   );
 };
@@ -108,23 +139,28 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({
   onThemeChange,
   onThresholdChange,
 }) => {
+  const { t } = useTranslation();
+  
   return (
     <div className="device-selector-window">
       <div className="container mx-auto p-8 max-w-2xl">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-2xl font-bold text-primary">AudibleOverlay</h1>
-          <ThemeToggle theme={theme} onThemeChange={onThemeChange} />
+          <h1 className="text-2xl font-bold text-primary">{t('title')}</h1>
+          <div className="flex items-center gap-4">
+            <LanguageSelector />
+            <ThemeToggle theme={theme} onThemeChange={onThemeChange} />
+          </div>
         </div>
 
         <div className="space-y-6">
           <div className="device-selector">
-            <h2>入力デバイスを選択</h2>
+            <h2>{t('device.title')}</h2>
             <select 
               value={selectedDevice} 
               onChange={(e) => onDeviceChange(e.target.value)}
               className="select-input"
             >
-              <option value="">デバイスを選択してください</option>
+              <option value="">{t('device.placeholder')}</option>
               {devices.map((device) => (
                 <option key={device.id} value={device.id}>
                   {device.name}
@@ -134,7 +170,7 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({
           </div>
 
           <div className="device-selector">
-            <h2>表示モニターを選択</h2>
+            <h2>{t('monitor.title')}</h2>
             <select
               value={selectedMonitor}
               onChange={(e) => onMonitorChange(Number(e.target.value))}
@@ -155,9 +191,9 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({
 
           <div className="debug-info">
             <div className="flex justify-between items-center">
-              <span>音声レベル: {audioLevel.toFixed(3)}</span>
+              <span>{t('status.audioLevel', { level: audioLevel.toFixed(3) })}</span>
               <span className={`px-3 py-1 rounded-full text-sm ${isActive ? 'bg-green-500 text-white' : 'bg-gray-400 text-gray-100'}`}>
-                {isActive ? 'アクティブ' : '非アクティブ'}
+                {isActive ? t('status.active') : t('status.inactive')}
               </span>
             </div>
           </div>
@@ -190,11 +226,18 @@ function App() {
   const [selectedMonitor, setSelectedMonitor] = useState<number>(0);
   const [theme, setTheme] = useState<Theme>('system');
   const [threshold, setThreshold] = useState<number>(0.001);
+  const { i18n } = useTranslation();
 
   useEffect(() => {
     const initStore = async () => {
       const store = await load('.settings.dat');
       
+      // 保存された言語設定を読み込む
+      const savedLanguage = await store.get('language');
+      if (savedLanguage) {
+        i18n.changeLanguage(savedLanguage as string);
+      }
+
       const loadDevices = async () => {
         try {
           console.log('デバイス一覧を取得中...');
