@@ -17,6 +17,115 @@ interface MonitorInfo {
   size: [number, number];
 }
 
+interface SettingsWindowProps {
+  devices: AudioDevice[];
+  selectedDevice: string;
+  monitors: MonitorInfo[];
+  selectedMonitor: number;
+  theme: Theme;
+  audioLevel: number;
+  isActive: boolean;
+  onDeviceChange: (deviceId: string) => Promise<void>;
+  onMonitorChange: (monitorId: number) => Promise<void>;
+  onThemeChange: (theme: Theme) => Promise<void>;
+}
+
+const SettingsWindow: React.FC<SettingsWindowProps> = ({
+  devices,
+  selectedDevice,
+  monitors,
+  selectedMonitor,
+  theme,
+  audioLevel,
+  isActive,
+  onDeviceChange,
+  onMonitorChange,
+  onThemeChange,
+}) => {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
+      <div className="container mx-auto p-8">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-2xl font-bold">AudibleOverlay</h1>
+          <div className="flex space-x-2">
+            <button className="p-2 hover:bg-gray-700 rounded">_</button>
+            <button className="p-2 hover:bg-gray-700 rounded">□</button>
+            <button className="p-2 hover:bg-gray-700 rounded">×</button>
+          </div>
+        </div>
+
+        <div className="space-y-8">
+          <div>
+            <h2 className="text-xl mb-4">入力デバイスを選択</h2>
+            <select 
+              value={selectedDevice} 
+              onChange={(e) => onDeviceChange(e.target.value)}
+              className="w-full p-3 rounded bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">デバイスを選択してください</option>
+              {devices.map((device) => (
+                <option key={device.id} value={device.id}>
+                  {device.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <h2 className="text-xl mb-4">表示モニターを選択</h2>
+            <select
+              value={selectedMonitor}
+              onChange={(e) => onMonitorChange(Number(e.target.value))}
+              className="w-full p-3 rounded bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-blue-500"
+            >
+              {monitors.map((monitor) => (
+                <option key={monitor.id} value={monitor.id}>
+                  {monitor.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <h2 className="text-xl mb-4">テーマ設定</h2>
+            <select
+              value={theme}
+              onChange={(e) => onThemeChange(e.target.value as Theme)}
+              className="w-full p-3 rounded bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="system">システム設定に同期</option>
+              <option value="light">ライトモード</option>
+              <option value="dark">ダークモード</option>
+            </select>
+          </div>
+
+          <div className="bg-gray-800 p-4 rounded">
+            <div className="flex justify-between items-center mb-2">
+              <span>音声レベル: {audioLevel.toFixed(3)}</span>
+              <span className={`px-2 py-1 rounded ${isActive ? 'bg-green-500' : 'bg-gray-600'}`}>
+                {isActive ? 'いいえ' : 'はい'}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+interface OverlayWindowProps {
+  isActive: boolean;
+}
+
+const OverlayWindow: React.FC<OverlayWindowProps> = ({ isActive }) => {
+  return (
+    <div className="fixed inset-0 w-screen h-screen pointer-events-none bg-transparent flex justify-center items-center overflow-hidden">
+      <div className={`absolute inset-0 w-full h-full transition-all duration-300 box-border bg-transparent ${isActive ? 'shadow-[0_-10px_10px_rgba(0,255,0,0.4),0_10px_10px_rgba(0,255,0,0.4),-10px_0_10px_rgba(0,255,0,0.4),10px_0_10px_rgba(0,255,0,0.4),inset_0_0_30px_rgba(0,255,0,0.2),inset_0_0_30px_rgba(0,255,0,0.1)]' : ''}`}>
+      </div>
+    </div>
+  );
+};
+
 function App() {
   const [isActive, setIsActive] = useState(false);
   const [devices, setDevices] = useState<AudioDevice[]>([]);
@@ -152,7 +261,6 @@ function App() {
       await invoke('set_input_device', { deviceId });
       setSelectedDevice(deviceId);
       
-      // 設定を保存
       const store = await load('.settings.dat');
       await store.set('selected_device', deviceId);
       await store.save();
@@ -163,11 +271,9 @@ function App() {
 
   const handleMonitorChange = async (monitorId: number) => {
     try {
-      // オーバーレイウィンドウを移動
       await invoke('move_overlay_to_monitor', { monitor_id: monitorId });
       setSelectedMonitor(monitorId);
       
-      // 設定を保存
       const store = await load('.settings.dat');
       await store.set('selected_monitor', monitorId);
       await store.save();
@@ -183,85 +289,25 @@ function App() {
     await store.save();
   };
 
-  const handleThresholdChange = async (newThreshold: number) => {
-    try {
-      setThreshold(newThreshold);
-      await invoke('set_threshold', { threshold: newThreshold });
-      const store = await load('.settings.dat');
-      await store.set('threshold', newThreshold);
-      await store.save();
-    } catch (error) {
-      console.error('閾値の設定に失敗:', error);
-    }
-  };
-
   return (
     <>
       {!isOverlayWindow && (
-        <div className="device-selector-window">
-          <div className="device-selector">
-            <h2>入力デバイスを選択</h2>
-            <select 
-              value={selectedDevice} 
-              onChange={(e) => handleDeviceChange(e.target.value)}
-            >
-              <option value="">デバイスを選択してください</option>
-              {devices.map((device) => (
-                <option key={device.id} value={device.id}>
-                  {device.name}
-                </option>
-              ))}
-            </select>
-
-            <h2>表示モニターを選択</h2>
-            <select
-              value={selectedMonitor}
-              onChange={(e) => handleMonitorChange(Number(e.target.value))}
-            >
-              {monitors.map((monitor) => (
-                <option key={monitor.id} value={monitor.id}>
-                  {monitor.name}
-                </option>
-              ))}
-            </select>
-
-            <h2>テーマ設定</h2>
-            <select
-              value={theme}
-              onChange={(e) => handleThemeChange(e.target.value as Theme)}
-              className="theme-select"
-            >
-              <option value="system">システム設定に同期</option>
-              <option value="light">ライトモード</option>
-              <option value="dark">ダークモード</option>
-            </select>
-
-            <h2>音声検出閾値</h2>
-            <input
-              type="number"
-              min="0.0001"
-              max="0.01"
-              step="0.0001"
-              value={threshold}
-              onChange={(e) => handleThresholdChange(Number(e.target.value))}
-              className="threshold-input"
-            />
-            <div className="threshold-value">
-              現在の閾値: {threshold?.toFixed(4) ?? '0.0010'}
-            </div>
-
-            <div className="debug-info">
-              <p>音声レベル: {audioLevel.toFixed(3)}</p>
-              <p>アクティブ: {isActive ? "はい" : "いいえ"}</p>
-            </div>
-          </div>
-        </div>
+        <SettingsWindow
+          devices={devices}
+          selectedDevice={selectedDevice}
+          monitors={monitors}
+          selectedMonitor={selectedMonitor}
+          theme={theme}
+          audioLevel={audioLevel}
+          isActive={isActive}
+          onDeviceChange={handleDeviceChange}
+          onMonitorChange={handleMonitorChange}
+          onThemeChange={handleThemeChange}
+        />
       )}
 
       {isOverlayWindow && (
-        <div className={`overlay ${isActive ? 'active' : ''}`}>
-          <div className="border-effect" />
-        </div>
+        <OverlayWindow isActive={isActive} />
       )}
     </>
   );
