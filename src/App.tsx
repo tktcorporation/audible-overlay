@@ -6,6 +6,7 @@ import { SettingsWindow } from './components/SettingsWindow';
 import { OverlayWindow } from './components/OverlayWindow';
 import { useAudioMonitor } from './hooks/useAudioMonitor';
 import { useMonitor } from './hooks/useMonitor';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 function App() {
   const [isOverlayWindow, setIsOverlayWindow] = useState(false);
@@ -33,7 +34,7 @@ function App() {
   }, []);
 
   return (
-    <>
+    <ErrorBoundary>
       {!isOverlayWindow && (
         <SettingsWindow
           devices={devices}
@@ -52,7 +53,7 @@ function App() {
       {isOverlayWindow && (
         <OverlayWindow isActive={isActive} />
       )}
-    </>
+    </ErrorBoundary>
   );
 }
 

@@ -26,5 +26,10 @@
     "audioLevel": "Audio Level: {{level}}",
     "active": "Active",
     "inactive": "Inactive"
+  },
+  "error": {
+    "title": "An Error Occurred",
+    "message": "Sorry, an unexpected error has occurred. Please reload the application.",
+    "reload": "Reload"
   }
 } 
