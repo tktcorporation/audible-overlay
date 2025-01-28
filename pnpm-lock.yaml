@@ -17,6 +17,9 @@ importers:
       '@tauri-apps/plugin-store':
         specifier: ^2.2.0
         version: 2.2.0
+      lucide-react:
+        specifier: ^0.474.0
+        version: 0.474.0(react@18.3.1)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -24,9 +27,6 @@ importers:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
     devDependencies:
-      '@tailwindcss/postcss':
-        specifier: ^4.0.0
-        version: 4.0.0
       '@tailwindcss/vite':
         specifier: ^4.0.0
         version: 4.0.0(vite@6.0.11(@types/node@22.12.0)(jiti@2.4.2)(lightningcss@1.29.1))
@@ -45,12 +45,6 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^4.3.4
         version: 4.3.4(vite@6.0.11(@types/node@22.12.0)(jiti@2.4.2)(lightningcss@1.29.1))
-      autoprefixer:
-        specifier: ^10.4.20
-        version: 10.4.20(postcss@8.5.1)
-      postcss:
-        specifier: ^8.5.1
-        version: 8.5.1
       tailwindcss:
         specifier: ^4.0.0
         version: 4.0.0
@@ -62,10 +56,6 @@ importers:
         version: 6.0.11(@types/node@22.12.0)(jiti@2.4.2)(lightningcss@1.29.1)
 
 packages:
-
-  '@alloc/quick-lru@5.2.0':
-    resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
-    engines: {node: '>=10'}
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -486,9 +476,6 @@ packages:
     resolution: {integrity: sha512-W3FjpJgy4VV1JiL7iBYDf2n/WkeDg1Il+0Q7eWnqPyvkPPCo/Mbwc5BiaT7dfBNV6tQKAhVE34rU5xl8pSl50w==}
     engines: {node: '>= 10'}
 
-  '@tailwindcss/postcss@4.0.0':
-    resolution: {integrity: sha512-lI2bPk4TvwavHdehjr5WiC6HnZ59hacM6ySEo4RM/H7tsjWd8JpqiNW9ThH7rO/yKtrn4mGBoXshpvn8clXjPg==}
-
   '@tailwindcss/vite@4.0.0':
     resolution: {integrity: sha512-4uukMiU9gHui8KMPMdWic5SP1O/tmQ1NFSRNrQWmcop5evAVl/LZ6/LuWL3quEiecp2RBcRWwqJrG+mFXlRlew==}
     peerDependencies:
@@ -603,13 +590,6 @@ packages:
     peerDependencies:
       vite: ^4.2.0 || ^5.0.0 || ^6.0.0
 
-  autoprefixer@10.4.20:
-    resolution: {integrity: sha512-XY25y5xSv/wEoqzDyXXME4AFfkZI0P23z6Fs3YgymDnKJkCGOnkL0iTxCa85UTqaSgfcqyf3UA6+c7wUvx/16g==}
-    engines: {node: ^10 || ^12 || >=14}
-    hasBin: true
-    peerDependencies:
-      postcss: ^8.1.0
-
   browserslist@4.24.4:
     resolution: {integrity: sha512-KDi1Ny1gSePi1vm0q4oxSF8b4DR44GF4BbmS2YdhPLOEqd8pDviZOGH/GsmRwoWJ2+5Lr085X7naowMwKHDG1A==}
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
@@ -653,9 +633,6 @@ packages:
   escalade@3.2.0:
     resolution: {integrity: sha512-WUj2qlxaQtO4g6Pq5c29GTcWGDyd8itL8zTlipgECz3JesAiiOKotd8JU6otB3PACgG6xkJUyVhboMS+bje/jA==}
     engines: {node: '>=6'}
-
-  fraction.js@4.3.7:
-    resolution: {integrity: sha512-ZsDfxO51wGAXREY55a7la9LScWpwv9RxIrYABrlvOFBlH/ShPnrtsXeuUIfXKKOVicNxQ+o8JTbJvjS4M89yew==}
 
   fsevents@2.3.3:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
@@ -761,6 +738,11 @@ packages:
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
+  lucide-react@0.474.0:
+    resolution: {integrity: sha512-CmghgHkh0OJNmxGKWc0qfPJCYHASPMVSyGY8fj3xgk4v84ItqDg64JNKFZn5hC6E0vHi6gxnbCgwhyVB09wQtA==}
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
@@ -772,15 +754,8 @@ packages:
   node-releases@2.0.19:
     resolution: {integrity: sha512-xxOWJsBKtzAq7DY0J+DTzuz58K8e7sJbdgwkbMWQe8UYB6ekmsQ45q0M/tJDsGaZmbC+l7n57UV8Hl5tHxO9uw==}
 
-  normalize-range@0.1.2:
-    resolution: {integrity: sha512-bdok/XvKII3nUpklnV6P2hxtMNrCboOjAcyBuQnWEhO665FwrSNRxU+AqpsyvO6LgGYPspN+lu5CLtw4jPRKNA==}
-    engines: {node: '>=0.10.0'}
-
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
-
-  postcss-value-parser@4.2.0:
-    resolution: {integrity: sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==}
 
   postcss@8.5.1:
     resolution: {integrity: sha512-6oz2beyjc5VMn/KV1pPw8fliQkhBXrVn1Z3TVyqZxU8kZpzEKhBdmCFqI6ZbmGtamQvQGuU1sgPTk8ZrXDD7jQ==}
@@ -880,8 +855,6 @@ packages:
     resolution: {integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==}
 
 snapshots:
-
-  '@alloc/quick-lru@5.2.0': {}
 
   '@ampproject/remapping@2.3.0':
     dependencies:
@@ -1200,15 +1173,6 @@ snapshots:
       '@tailwindcss/oxide-win32-arm64-msvc': 4.0.0
       '@tailwindcss/oxide-win32-x64-msvc': 4.0.0
 
-  '@tailwindcss/postcss@4.0.0':
-    dependencies:
-      '@alloc/quick-lru': 5.2.0
-      '@tailwindcss/node': 4.0.0
-      '@tailwindcss/oxide': 4.0.0
-      lightningcss: 1.29.1
-      postcss: 8.5.1
-      tailwindcss: 4.0.0
-
   '@tailwindcss/vite@4.0.0(vite@6.0.11(@types/node@22.12.0)(jiti@2.4.2)(lightningcss@1.29.1))':
     dependencies:
       '@tailwindcss/node': 4.0.0
@@ -1319,16 +1283,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  autoprefixer@10.4.20(postcss@8.5.1):
-    dependencies:
-      browserslist: 4.24.4
-      caniuse-lite: 1.0.30001695
-      fraction.js: 4.3.7
-      normalize-range: 0.1.2
-      picocolors: 1.1.1
-      postcss: 8.5.1
-      postcss-value-parser: 4.2.0
-
   browserslist@4.24.4:
     dependencies:
       caniuse-lite: 1.0.30001695
@@ -1384,8 +1338,6 @@ snapshots:
       '@esbuild/win32-x64': 0.24.2
 
   escalade@3.2.0: {}
-
-  fraction.js@4.3.7: {}
 
   fsevents@2.3.3:
     optional: true
@@ -1457,17 +1409,17 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
+  lucide-react@0.474.0(react@18.3.1):
+    dependencies:
+      react: 18.3.1
+
   ms@2.1.3: {}
 
   nanoid@3.3.8: {}
 
   node-releases@2.0.19: {}
 
-  normalize-range@0.1.2: {}
-
   picocolors@1.1.1: {}
-
-  postcss-value-parser@4.2.0: {}
 
   postcss@8.5.1:
     dependencies:

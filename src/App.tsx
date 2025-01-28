@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { load } from '@tauri-apps/plugin-store';
 import "./App.css";
+import { Sun, Moon, Monitor } from "lucide-react";
 
 type Theme = 'light' | 'dark' | 'system';
 
@@ -30,6 +31,28 @@ interface SettingsWindowProps {
   onThemeChange: (theme: Theme) => Promise<void>;
 }
 
+const ThemeToggle: React.FC<{
+  theme: Theme;
+  onThemeChange: (theme: Theme) => Promise<void>;
+}> = ({ theme, onThemeChange }) => {
+  const handleClick = () => {
+    const nextTheme = theme === 'light' ? 'dark' : theme === 'dark' ? 'system' : 'light';
+    onThemeChange(nextTheme);
+  };
+
+  return (
+    <button
+      onClick={handleClick}
+      className="theme-toggle-btn"
+      title={`現在のテーマ: ${theme === 'system' ? 'システム' : theme === 'light' ? 'ライト' : 'ダーク'}`}
+    >
+      {theme === 'light' && <Sun size={20} />}
+      {theme === 'dark' && <Moon size={20} />}
+      {theme === 'system' && <Monitor size={20} />}
+    </button>
+  );
+};
+
 const SettingsWindow: React.FC<SettingsWindowProps> = ({
   devices,
   selectedDevice,
@@ -45,6 +68,11 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({
   return (
     <div className="device-selector-window">
       <div className="container mx-auto p-8 max-w-2xl">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-2xl font-bold text-primary">AudibleOverlay</h1>
+          <ThemeToggle theme={theme} onThemeChange={onThemeChange} />
+        </div>
+
         <div className="space-y-6">
           <div className="device-selector">
             <h2>入力デバイスを選択</h2>
@@ -74,19 +102,6 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({
                   {monitor.name}
                 </option>
               ))}
-            </select>
-          </div>
-
-          <div className="device-selector">
-            <h2>テーマ設定</h2>
-            <select
-              value={theme}
-              onChange={(e) => onThemeChange(e.target.value as Theme)}
-              className="select-input"
-            >
-              <option value="system">システム設定に同期</option>
-              <option value="light">ライトモード</option>
-              <option value="dark">ダークモード</option>
             </select>
           </div>
 
