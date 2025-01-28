@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
-import { ThemeProvider } from 'next-themes';
-import { useTranslation } from 'react-i18next';
 import "./App.css";
 import "./i18n";
 import { SettingsWindow } from './components/SettingsWindow';
@@ -11,7 +9,6 @@ import { useMonitor } from './hooks/useMonitor';
 
 function App() {
   const [isOverlayWindow, setIsOverlayWindow] = useState(false);
-  const { i18n } = useTranslation();
   const {
     isActive,
     devices,
@@ -36,7 +33,7 @@ function App() {
   }, []);
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <>
       {!isOverlayWindow && (
         <SettingsWindow
           devices={devices}
@@ -55,7 +52,7 @@ function App() {
       {isOverlayWindow && (
         <OverlayWindow isActive={isActive} />
       )}
-    </ThemeProvider>
+    </>
   );
 }
 
