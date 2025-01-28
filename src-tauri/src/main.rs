@@ -139,6 +139,9 @@ fn main() {
 
             // オーバーレイウィンドウを取得して最前面に表示
             if let Some(overlay_window) = app.get_webview_window("overlay") {
+                // デコレーションを必ず無効化
+                overlay_window.set_decorations(false)?;
+                
                 // 現在のモニターの情報を取得
                 if let Some(monitor) = overlay_window.current_monitor()? {
                     let position = monitor.position();
@@ -152,9 +155,6 @@ fn main() {
                         x: position.x,
                         y: position.y,
                     }))?;
-
-                    // ウィンドウの装飾を無効化
-                    overlay_window.set_decorations(false)?;
                 }
                 overlay_window.set_always_on_top(true)?;
                 overlay_window.set_ignore_cursor_events(true)?;

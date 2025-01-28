@@ -22,6 +22,7 @@
       },
       {
         "label": "overlay",
+        "title": "",
         "decorations": false,
         "transparent": true,
         "alwaysOnTop": true,
