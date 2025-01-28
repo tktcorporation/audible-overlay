@@ -8,12 +8,21 @@ interface AudioDevice {
   id: string;
 }
 
+interface MonitorInfo {
+  id: number;
+  name: string;
+  position: [number, number];
+  size: [number, number];
+}
+
 function App() {
   const [isActive, setIsActive] = useState(false);
   const [devices, setDevices] = useState<AudioDevice[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<string>("");
   const [isOverlayWindow, setIsOverlayWindow] = useState(false);
   const [audioLevel, setAudioLevel] = useState<number>(0);
+  const [monitors, setMonitors] = useState<MonitorInfo[]>([]);
+  const [selectedMonitor, setSelectedMonitor] = useState<number>(0);
 
   useEffect(() => {
     const initStore = async () => {
@@ -33,6 +42,13 @@ function App() {
             setSelectedDevice(savedDevice as string);
             handleDeviceChange(savedDevice as string);
           }
+
+          // 保存されたモニター設定を読み込む
+          const savedMonitor = await store.get('selected_monitor');
+          if (savedMonitor !== null) {
+            setSelectedMonitor(savedMonitor as number);
+            handleMonitorChange(savedMonitor as number);
+          }
         } catch (error) {
           console.error('デバイス一覧の取得に失敗:', error);
         }
@@ -42,6 +58,19 @@ function App() {
     };
 
     initStore();
+  }, []);
+
+  useEffect(() => {
+    const loadMonitors = async () => {
+      try {
+        const monitorList = await invoke<MonitorInfo[]>('get_available_monitors');
+        setMonitors(monitorList);
+      } catch (error) {
+        console.error('モニター一覧の取得に失敗:', error);
+      }
+    };
+
+    loadMonitors();
   }, []);
 
   useEffect(() => {
@@ -86,6 +115,20 @@ function App() {
     }
   };
 
+  const handleMonitorChange = async (monitorId: number) => {
+    try {
+      await invoke('move_to_monitor', { monitorId });
+      setSelectedMonitor(monitorId);
+      
+      // 設定を保存
+      const store = await load('.settings.dat');
+      await store.set('selected_monitor', monitorId);
+      await store.save();
+    } catch (error) {
+      console.error('モニターの設定に失敗:', error);
+    }
+  };
+
   return (
     <>
       {!isOverlayWindow && (
@@ -102,6 +145,19 @@ function App() {
               </option>
             ))}
           </select>
+
+          <h2>表示モニターを選択</h2>
+          <select
+            value={selectedMonitor}
+            onChange={(e) => handleMonitorChange(Number(e.target.value))}
+          >
+            {monitors.map((monitor) => (
+              <option key={monitor.id} value={monitor.id}>
+                {monitor.name}
+              </option>
+            ))}
+          </select>
+
           <div className="debug-info">
             <p>音声レベル: {audioLevel.toFixed(3)}</p>
             <p>アクティブ: {isActive ? "はい" : "いいえ"}</p>
