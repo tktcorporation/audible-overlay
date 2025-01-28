@@ -6,10 +6,11 @@
   filter: drop-shadow(0 0 2em #61dafb);
 }
 :root {
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", YuGothic, Meiryo, -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 16px;
-  line-height: 24px;
+  line-height: 1.6;
   font-weight: 400;
+  letter-spacing: 0.02em;
 
   color: #0f0f0f;
   background-color: transparent !important;
@@ -25,6 +26,16 @@ body {
   margin: 0;
   padding: 0;
   background: transparent !important;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.device-selector-window {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 240, 250, 0.95));
+  backdrop-filter: blur(10px);
+  min-height: 100vh;
 }
 
 .container {
@@ -119,6 +130,41 @@ button {
   button:active {
     background-color: #0f0f0f69;
   }
+
+  #root:not(.overlay) {
+    background: linear-gradient(135deg, rgba(26, 32, 44, 0.95), rgba(45, 55, 72, 0.95));
+  }
+
+  .device-selector-window {
+    background: linear-gradient(135deg, rgba(26, 32, 44, 0.95), rgba(45, 55, 72, 0.95));
+  }
+
+  .device-selector {
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .device-selector h2 {
+    color: #f7fafc;
+  }
+
+  .device-selector select {
+    background-color: rgba(45, 55, 72, 0.8);
+    border-color: #4a5568;
+    color: #f7fafc;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23f7fafc' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  }
+
+  .device-selector select:hover {
+    border-color: #4299e1;
+  }
+
+  .debug-info {
+    background: rgba(26, 32, 44, 0.8);
+  }
+
+  .debug-info p {
+    color: #e2e8f0;
+  }
 }
 
 .overlay {
@@ -158,41 +204,89 @@ button {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(255, 255, 255, 0.9);
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  padding: 2rem;
+  border-radius: 16px;
   z-index: 1000;
+  min-width: 320px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
 }
 
 .device-selector h2 {
-  margin: 0 0 15px 0;
-  color: #333;
-  font-size: 1.2em;
+  margin: 0 0 1.5rem 0;
+  color: #2d3748;
+  font-size: 1.4em;
+  font-weight: 600;
+  text-align: center;
+  position: relative;
+  letter-spacing: 0.03em;
+  font-feature-settings: "palt";
+}
+
+.device-selector h2:after {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 3px;
+  background: linear-gradient(90deg, #4299e1, #667eea);
+  margin: 0.5rem auto 0;
+  border-radius: 2px;
 }
 
 .device-selector select {
+  font-family: inherit;
   width: 100%;
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 2px solid #e2e8f0;
   font-size: 1em;
+  background: rgba(255, 255, 255, 0.8);
+  margin-bottom: 1.5rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%234a5568' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.7rem center;
+  background-size: 1.2em;
+  letter-spacing: 0.02em;
 }
 
-@media (prefers-color-scheme: dark) {
-  .device-selector {
-    background: rgba(40, 40, 40, 0.9);
-  }
+.device-selector select:hover {
+  border-color: #4299e1;
+}
 
-  .device-selector h2 {
-    color: #fff;
-  }
+.device-selector select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
 
-  .device-selector select {
-    background: #333;
-    color: #fff;
-    border-color: #555;
-  }
+.debug-info {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: rgba(247, 250, 252, 0.8);
+  border-radius: 8px;
+  font-size: 0.9em;
+}
+
+.debug-info p {
+  margin: 0.5rem 0;
+  color: #4a5568;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .settings-button {

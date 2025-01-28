@@ -132,35 +132,37 @@ function App() {
   return (
     <>
       {!isOverlayWindow && (
-        <div className="device-selector">
-          <h2>入力デバイスを選択</h2>
-          <select 
-            value={selectedDevice} 
-            onChange={(e) => handleDeviceChange(e.target.value)}
-          >
-            <option value="">デバイスを選択してください</option>
-            {devices.map((device) => (
-              <option key={device.id} value={device.id}>
-                {device.name}
-              </option>
-            ))}
-          </select>
+        <div className="device-selector-window">
+          <div className="device-selector">
+            <h2>入力デバイスを選択</h2>
+            <select 
+              value={selectedDevice} 
+              onChange={(e) => handleDeviceChange(e.target.value)}
+            >
+              <option value="">デバイスを選択してください</option>
+              {devices.map((device) => (
+                <option key={device.id} value={device.id}>
+                  {device.name}
+                </option>
+              ))}
+            </select>
 
-          <h2>表示モニターを選択</h2>
-          <select
-            value={selectedMonitor}
-            onChange={(e) => handleMonitorChange(Number(e.target.value))}
-          >
-            {monitors.map((monitor) => (
-              <option key={monitor.id} value={monitor.id}>
-                {monitor.name}
-              </option>
-            ))}
-          </select>
+            <h2>表示モニターを選択</h2>
+            <select
+              value={selectedMonitor}
+              onChange={(e) => handleMonitorChange(Number(e.target.value))}
+            >
+              {monitors.map((monitor) => (
+                <option key={monitor.id} value={monitor.id}>
+                  {monitor.name}
+                </option>
+              ))}
+            </select>
 
-          <div className="debug-info">
-            <p>音声レベル: {audioLevel.toFixed(3)}</p>
-            <p>アクティブ: {isActive ? "はい" : "いいえ"}</p>
+            <div className="debug-info">
+              <p>音声レベル: {audioLevel.toFixed(3)}</p>
+              <p>アクティブ: {isActive ? "はい" : "いいえ"}</p>
+            </div>
           </div>
         </div>
       )}

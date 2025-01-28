@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "audible-overlay",
+  "productName": "AudibleOverlay",
   "version": "0.1.0",
   "identifier": "com.audible-overlay.app",
   "build": {
@@ -13,7 +13,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "audible-overlay",
+        "title": "AudibleOverlay",
         "width": 800,
         "height": 600,
         "visible": false
