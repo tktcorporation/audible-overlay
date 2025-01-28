@@ -91,12 +91,20 @@ fn move_overlay_to_monitor(app_handle: tauri::AppHandle, monitor_id: u32) -> Res
     let monitors = overlay_window.available_monitors().map_err(|e| e.to_string())?;
     if let Some(monitor) = monitors.get(monitor_id as usize) {
         let position = monitor.position();
-        let size = *monitor.size();
+        let size = monitor.size();
+
+        // ウィンドウのサイズを設定（モニターサイズと同じに）
+        overlay_window.set_size(tauri::Size::Physical(*size)).map_err(|e| e.to_string())?;
+        
+        // ウィンドウの位置を設定（モニターの左上に合わせる）
         overlay_window.set_position(tauri::Position::Physical(tauri::PhysicalPosition {
             x: position.x,
             y: position.y,
         })).map_err(|e| e.to_string())?;
-        overlay_window.set_size(tauri::Size::Physical(size)).map_err(|e| e.to_string())?;
+
+        // ウィンドウを最前面に設定し、マウスイベントを無視
+        overlay_window.set_always_on_top(true).map_err(|e| e.to_string())?;
+        overlay_window.set_ignore_cursor_events(true).map_err(|e| e.to_string())?;
     }
     Ok(())
 }
@@ -127,9 +135,17 @@ fn main() {
             if let Some(overlay_window) = app.get_webview_window("overlay") {
                 // 現在のモニターの情報を取得
                 if let Some(monitor) = overlay_window.current_monitor()? {
+                    let position = monitor.position();
                     let size = monitor.size();
+                    
+                    // ウィンドウのサイズを設定（モニターサイズと同じに）
                     overlay_window.set_size(tauri::Size::Physical(*size))?;
-                    overlay_window.set_position(tauri::Position::Physical(tauri::PhysicalPosition { x: 0, y: 0 }))?;
+                    
+                    // ウィンドウの位置を設定（モニターの左上に合わせる）
+                    overlay_window.set_position(tauri::Position::Physical(tauri::PhysicalPosition {
+                        x: position.x,
+                        y: position.y,
+                    }))?;
                 }
                 overlay_window.set_always_on_top(true)?;
                 overlay_window.set_ignore_cursor_events(true)?;
