@@ -43,24 +43,15 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({
   onThemeChange,
 }) => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
-      <div className="container mx-auto p-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-2xl font-bold">AudibleOverlay</h1>
-          <div className="flex space-x-2">
-            <button className="p-2 hover:bg-gray-700 rounded">_</button>
-            <button className="p-2 hover:bg-gray-700 rounded">□</button>
-            <button className="p-2 hover:bg-gray-700 rounded">×</button>
-          </div>
-        </div>
-
-        <div className="space-y-8">
-          <div>
-            <h2 className="text-xl mb-4">入力デバイスを選択</h2>
+    <div className="device-selector-window">
+      <div className="container mx-auto p-8 max-w-2xl">
+        <div className="space-y-6">
+          <div className="device-selector">
+            <h2>入力デバイスを選択</h2>
             <select 
               value={selectedDevice} 
               onChange={(e) => onDeviceChange(e.target.value)}
-              className="w-full p-3 rounded bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-blue-500"
+              className="select-input"
             >
               <option value="">デバイスを選択してください</option>
               {devices.map((device) => (
@@ -71,12 +62,12 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({
             </select>
           </div>
 
-          <div>
-            <h2 className="text-xl mb-4">表示モニターを選択</h2>
+          <div className="device-selector">
+            <h2>表示モニターを選択</h2>
             <select
               value={selectedMonitor}
               onChange={(e) => onMonitorChange(Number(e.target.value))}
-              className="w-full p-3 rounded bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-blue-500"
+              className="select-input"
             >
               {monitors.map((monitor) => (
                 <option key={monitor.id} value={monitor.id}>
@@ -86,12 +77,12 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({
             </select>
           </div>
 
-          <div>
-            <h2 className="text-xl mb-4">テーマ設定</h2>
+          <div className="device-selector">
+            <h2>テーマ設定</h2>
             <select
               value={theme}
               onChange={(e) => onThemeChange(e.target.value as Theme)}
-              className="w-full p-3 rounded bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-blue-500"
+              className="select-input"
             >
               <option value="system">システム設定に同期</option>
               <option value="light">ライトモード</option>
@@ -99,11 +90,11 @@ const SettingsWindow: React.FC<SettingsWindowProps> = ({
             </select>
           </div>
 
-          <div className="bg-gray-800 p-4 rounded">
-            <div className="flex justify-between items-center mb-2">
+          <div className="debug-info">
+            <div className="flex justify-between items-center">
               <span>音声レベル: {audioLevel.toFixed(3)}</span>
-              <span className={`px-2 py-1 rounded ${isActive ? 'bg-green-500' : 'bg-gray-600'}`}>
-                {isActive ? 'いいえ' : 'はい'}
+              <span className={`px-3 py-1 rounded-full text-sm ${isActive ? 'bg-green-500 text-white' : 'bg-gray-400 text-gray-100'}`}>
+                {isActive ? 'アクティブ' : '非アクティブ'}
               </span>
             </div>
           </div>
