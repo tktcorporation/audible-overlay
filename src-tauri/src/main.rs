@@ -82,6 +82,25 @@ fn move_to_monitor(window: tauri::Window, monitor_id: u32) -> Result<(), String>
     Ok(())
 }
 
+#[tauri::command]
+fn move_overlay_to_monitor(app_handle: tauri::AppHandle, monitor_id: u32) -> Result<(), String> {
+    let overlay_window = app_handle
+        .get_webview_window("overlay")
+        .ok_or_else(|| "オーバーレイウィンドウが見つかりません".to_string())?;
+
+    let monitors = overlay_window.available_monitors().map_err(|e| e.to_string())?;
+    if let Some(monitor) = monitors.get(monitor_id as usize) {
+        let position = monitor.position();
+        let size = *monitor.size();
+        overlay_window.set_position(tauri::Position::Physical(tauri::PhysicalPosition {
+            x: position.x,
+            y: position.y,
+        })).map_err(|e| e.to_string())?;
+        overlay_window.set_size(tauri::Size::Physical(size)).map_err(|e| e.to_string())?;
+    }
+    Ok(())
+}
+
 fn main() {
     let audio_monitor = AudioMonitor::new();
 
@@ -95,7 +114,8 @@ fn main() {
             get_window_type,
             get_audio_level,
             get_available_monitors,
-            move_to_monitor
+            move_to_monitor,
+            move_overlay_to_monitor
         ])
         .setup(|app| {
             // メインウィンドウを表示（デバイス選択用）

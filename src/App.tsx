@@ -155,7 +155,8 @@ function App() {
 
   const handleMonitorChange = async (monitorId: number) => {
     try {
-      await invoke('move_to_monitor', { monitorId });
+      // オーバーレイウィンドウを移動
+      await invoke('move_overlay_to_monitor', { monitorId });
       setSelectedMonitor(monitorId);
       
       // 設定を保存
