@@ -3,43 +3,36 @@ import { invoke } from "@tauri-apps/api/core";
 import { load } from '@tauri-apps/plugin-store';
 import { AudioDevice } from '../types';
 import { log } from '../utils/logger';
+import { safeGet } from '../utils/store';
 
 export const useAudioMonitor = () => {
   const [isActive, setIsActive] = useState(false);
   const [devices, setDevices] = useState<AudioDevice[]>([]);
-  const [selectedDevice, setSelectedDevice] = useState<string>("");
+  const [selectedDevice, setSelectedDevice] = useState<string>('default');
   const [audioLevel, setAudioLevel] = useState<number>(0);
-  const [threshold, setThreshold] = useState<number>(0.001);
+  const [threshold, setThreshold] = useState<number>(0.05);
 
   useEffect(() => {
-    const loadDevices = async () => {
+    const initializeSettings = async () => {
       try {
         log.info('デバイス一覧を取得中...');
         const deviceList = await invoke<AudioDevice[]>('get_input_devices');
         log.info('取得したデバイス一覧:', deviceList);
         setDevices(deviceList);
-        
-        const store = await load('.settings.dat');
-        // 保存されたデバイス設定を読み込む
-        const savedDevice = await store.get('selected_device');
-        log.info('保存されたデバイス設定:', savedDevice);
-        if (savedDevice) {
-          setSelectedDevice(savedDevice as string);
-          handleDeviceChange(savedDevice as string);
-        }
 
-        // 保存された閾値設定を読み込む
-        const savedThreshold = await store.get('threshold');
-        if (savedThreshold !== null) {
-          setThreshold(savedThreshold as number);
-          await invoke('set_threshold', { threshold: savedThreshold });
-        }
+        const savedDevice = await safeGet<string>('selected_device', 'default');
+        setSelectedDevice(savedDevice);
+        await invoke('set_input_device', { deviceId: savedDevice });
+
+        const savedThreshold = await safeGet<number>('threshold', 0.001);
+        setThreshold(savedThreshold);
+        await invoke('set_threshold', { threshold: savedThreshold });
       } catch (error) {
-        log.error('設定の読み込みに失敗:', error);
+        log.error('設定の初期化に失敗:', error);
       }
     };
 
-    loadDevices();
+    initializeSettings();
   }, []);
 
   useEffect(() => {
@@ -76,11 +69,16 @@ export const useAudioMonitor = () => {
   };
 
   const handleThresholdChange = async (newThreshold: number) => {
-    setThreshold(newThreshold);
-    const store = await load('.settings.dat');
-    await store.set('threshold', newThreshold);
-    await store.save();
-    await invoke('set_threshold', { threshold: newThreshold });
+    try {
+      setThreshold(newThreshold);
+      await invoke('set_threshold', { threshold: newThreshold });
+      
+      const store = await load('.settings.dat');
+      await store.set('threshold', newThreshold);
+      await store.save();
+    } catch (error) {
+      log.error('閾値の設定に失敗:', error);
+    }
   };
 
   return {

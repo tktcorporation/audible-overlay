@@ -3,6 +3,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { load } from '@tauri-apps/plugin-store';
 import { MonitorInfo } from '../types';
 import { log } from '../utils/logger';
+import { safeGet } from '../utils/store';
 
 export const useMonitor = () => {
   const [monitors, setMonitors] = useState<MonitorInfo[]>([]);
@@ -14,12 +15,9 @@ export const useMonitor = () => {
         const monitorList = await invoke<MonitorInfo[]>('get_available_monitors');
         setMonitors(monitorList);
 
-        const store = await load('.settings.dat');
-        const savedMonitor = await store.get('selected_monitor');
-        if (savedMonitor !== null) {
-          setSelectedMonitor(savedMonitor as number);
-          handleMonitorChange(savedMonitor as number);
-        }
+        const savedMonitor = await safeGet<number>('selected_monitor', 0);
+        setSelectedMonitor(savedMonitor);
+        await invoke('move_overlay_to_monitor', { monitor_id: savedMonitor });
       } catch (error) {
         log.error('モニター一覧の取得に失敗:', error);
       }
