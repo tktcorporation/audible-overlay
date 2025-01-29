@@ -72,7 +72,7 @@ impl AudioMonitor {
                 let level = data.iter().map(|&sample| sample.abs()).fold(0.0f32, f32::max);
                 *current_level.lock().unwrap() = level;
                 let threshold = *threshold.lock().unwrap();
-                let is_speaking = level > threshold;
+                let is_speaking = level >= threshold;
                 is_active.store(is_speaking, Ordering::Relaxed);
             },
             |err| eprintln!("音声ストリームでエラーが発生: {}", err),
