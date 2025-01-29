@@ -10,7 +10,7 @@ export const useAudioMonitor = () => {
   const [devices, setDevices] = useState<AudioDevice[]>([]);
   const [selectedDevice, setSelectedDevice] = useState<string>('default');
   const [audioLevel, setAudioLevel] = useState<number>(0);
-  const [threshold, setThreshold] = useState<number>(0.05);
+  const [threshold, setThreshold] = useState<number>(0.001);
 
   useEffect(() => {
     const initializeSettings = async () => {
