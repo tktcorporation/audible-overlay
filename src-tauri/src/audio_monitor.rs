@@ -2,6 +2,7 @@ use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
+use log::{info, debug};
 
 #[derive(serde::Serialize)]
 pub struct AudioDevice {
@@ -30,24 +31,22 @@ impl AudioMonitor {
     }
 
     pub fn get_input_devices() -> Result<Vec<AudioDevice>, Box<dyn std::error::Error>> {
-        println!("Rustバックエンド: デバイス一覧の取得を開始");
+        info!("デバイス一覧の取得を開始");
+        
         let host = cpal::default_host();
         let devices = host.input_devices()?;
+        let devices: Vec<_> = devices.collect();
         
-        println!("Rustバックエンド: ホストからデバイス一覧を取得完了");
-        let audio_devices: Vec<AudioDevice> = devices
+        debug!("検出されたデバイス数: {}", devices.len());
+        
+        Ok(devices
+            .into_iter()
             .filter_map(|device| {
-                let name = device.name().ok()?;
-                println!("Rustバックエンド: デバイスを検出 - {}", name);
-                Some(AudioDevice { 
-                    name: name.clone(), 
-                    id: name 
-                })
+                let name = device.name().unwrap_or_default();
+                debug!("デバイス検出: {}", name);
+                Some(AudioDevice { name: name.clone(), id: name })
             })
-            .collect();
-
-        println!("Rustバックエンド: 検出されたデバイス数: {}", audio_devices.len());
-        Ok(audio_devices)
+            .collect())
     }
 
     pub fn start_monitoring_with_device(&self, device_name: &str) -> Result<(), Box<dyn std::error::Error>> {

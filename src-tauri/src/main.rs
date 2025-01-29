@@ -6,6 +6,7 @@ use audio_monitor::{AudioMonitor, AudioDevice};
 use std::sync::Mutex;
 use tauri::Manager;
 use serde::Serialize;
+use tauri_plugin_log::{Target, TargetKind};
 
 #[derive(Serialize)]
 struct MonitorInfo {
@@ -132,6 +133,11 @@ fn main() {
     tauri::Builder::default()
         .manage(Mutex::new(audio_monitor))
         .plugin(tauri_plugin_store::Builder::default().build())
+        .plugin(tauri_plugin_log::Builder::new().targets([
+            Target::new(TargetKind::Stdout),
+            Target::new(TargetKind::LogDir { file_name: None }),
+            Target::new(TargetKind::Webview),
+        ]).build())
         .invoke_handler(tauri::generate_handler![
             check_audio_active,
             get_input_devices,
@@ -176,5 +182,5 @@ fn main() {
             Ok(())
         })
         .run(tauri::generate_context!())
-        .expect("エラー: Tauriアプリケーションの実行に失敗しました");
+        .expect("アプリケーション起動に失敗しました");
 }

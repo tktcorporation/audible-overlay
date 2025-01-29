@@ -7,6 +7,7 @@ import { OverlayWindow } from './components/OverlayWindow';
 import { useAudioMonitor } from './hooks/useAudioMonitor';
 import { useMonitor } from './hooks/useMonitor';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { initializeLogger, cleanupLogger } from './utils/logger';
 
 function App() {
   const [isOverlayWindow, setIsOverlayWindow] = useState(false);
@@ -26,11 +27,16 @@ function App() {
   } = useMonitor();
 
   useEffect(() => {
-    const initWindow = async () => {
+    const init = async () => {
+      await initializeLogger();
       const windowType = await invoke<string>('get_window_type');
       setIsOverlayWindow(windowType === 'overlay');
     };
-    initWindow();
+    init();
+
+    return () => {
+      cleanupLogger();
+    };
   }, []);
 
   return (

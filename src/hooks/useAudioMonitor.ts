@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { invoke } from "@tauri-apps/api/core";
 import { load } from '@tauri-apps/plugin-store';
 import { AudioDevice } from '../types';
+import { log } from '../utils/logger';
 
 export const useAudioMonitor = () => {
   const [isActive, setIsActive] = useState(false);
@@ -13,15 +14,15 @@ export const useAudioMonitor = () => {
   useEffect(() => {
     const loadDevices = async () => {
       try {
-        console.log('デバイス一覧を取得中...');
+        log.info('デバイス一覧を取得中...');
         const deviceList = await invoke<AudioDevice[]>('get_input_devices');
-        console.log('取得したデバイス一覧:', deviceList);
+        log.info('取得したデバイス一覧:', deviceList);
         setDevices(deviceList);
         
         const store = await load('.settings.dat');
         // 保存されたデバイス設定を読み込む
         const savedDevice = await store.get('selected_device');
-        console.log('保存されたデバイス設定:', savedDevice);
+        log.info('保存されたデバイス設定:', savedDevice);
         if (savedDevice) {
           setSelectedDevice(savedDevice as string);
           handleDeviceChange(savedDevice as string);
@@ -34,7 +35,7 @@ export const useAudioMonitor = () => {
           await invoke('set_threshold', { threshold: savedThreshold });
         }
       } catch (error) {
-        console.error('設定の読み込みに失敗:', error);
+        log.error('設定の読み込みに失敗:', error);
       }
     };
 
@@ -70,7 +71,7 @@ export const useAudioMonitor = () => {
       await store.set('selected_device', deviceId);
       await store.save();
     } catch (error) {
-      console.error('デバイスの設定に失敗:', error);
+      log.error('デバイスの設定に失敗:', error);
     }
   };
 

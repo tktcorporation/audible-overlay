@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { invoke } from "@tauri-apps/api/core";
 import { load } from '@tauri-apps/plugin-store';
 import { MonitorInfo } from '../types';
+import { log } from '../utils/logger';
 
 export const useMonitor = () => {
   const [monitors, setMonitors] = useState<MonitorInfo[]>([]);
@@ -20,7 +21,7 @@ export const useMonitor = () => {
           handleMonitorChange(savedMonitor as number);
         }
       } catch (error) {
-        console.error('モニター一覧の取得に失敗:', error);
+        log.error('モニター一覧の取得に失敗:', error);
       }
     };
 
@@ -36,7 +37,7 @@ export const useMonitor = () => {
       await store.set('selected_monitor', monitorId);
       await store.save();
     } catch (error) {
-      console.error('モニターの設定に失敗:', error);
+      log.error('モニターの設定に失敗:', error);
     }
   };
 

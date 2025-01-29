@@ -1,5 +1,6 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
 import { withTranslation, WithTranslation } from 'react-i18next';
+import { log } from '../utils/logger';
 
 interface Props extends WithTranslation {
   children: ReactNode;
@@ -21,8 +22,7 @@ class ErrorBoundaryComponent extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('エラーが発生しました:', error);
-    console.error('エラー詳細:', errorInfo);
+    log.error('エラーが発生しました:', { error, errorInfo });
   }
 
   public render() {
