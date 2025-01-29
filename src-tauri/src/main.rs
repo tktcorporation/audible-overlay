@@ -105,9 +105,6 @@ fn move_overlay_to_monitor(app_handle: tauri::AppHandle, monitor_id: u32) -> Res
 
         // ウィンドウの装飾を無効化
         overlay_window.set_decorations(false).map_err(|e| e.to_string())?;
-        
-        // フルスクリーンモードを設定
-        overlay_window.set_fullscreen(true).map_err(|e| e.to_string())?;
 
         // ウィンドウを最前面に設定し、マウスイベントを無視
         overlay_window.set_always_on_top(true).map_err(|e| e.to_string())?;
